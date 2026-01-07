@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MHMA Zakat Applications Management</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2e7d32;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #2e7d32;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        /* Login Section */
+        .login-section {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 8px;
+            border-left: 4px solid #2e7d32;
+        }
+        .login-section h2 {
+            color: #2e7d32;
+            margin-top: 0;
+            text-align: center;
+        }
+        .login-form .form-group {
+            margin-bottom: 15px;
+        }
+        .login-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        .login-form input, .login-form select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .login-form input:focus, .login-form select:focus {
+            outline: none;
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #2e7d32;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1b5e20;
+        }
+        .btn-secondary {
+            background-color: #757575;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #616161;
+        }
+        .btn-danger {
+            background-color: #d32f2f;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #b71c1c;
+        }
+        .btn-full {
+            width: 100%;
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 20px;
+            background: #2e7d32;
+            border-radius: 8px;
+            color: white;
+        }
+        .nav-bar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .nav-bar .user-role {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        .nav-bar .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .nav-bar .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #e3f2fd;
+            border-radius: 8px;
+        }
+        .filters .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .filters label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .filters input, .filters select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Applications Table */
+        .applications-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .applications-table th, .applications-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .applications-table th {
+            background-color: #2e7d32;
+            color: white;
+            font-weight: 600;
+        }
+        .applications-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .applications-table tr {
+            cursor: pointer;
+        }
+        .applications-table thead tr {
+            cursor: default;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-submitted {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .status-under_review {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-approved {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status-denied {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .status-pending_info {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        /* Application Detail View */
+        .application-detail {
+            display: none;
+        }
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #2e7d32;
+        }
+        .detail-header h2 {
+            color: #2e7d32;
+            margin: 0 0 10px 0;
+        }
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: #fafafa;
+            border-radius: 8px;
+            border-left: 4px solid #2e7d32;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .info-card h3 {
+            color: #2e7d32;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .info-item .label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+        .info-item .value {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Status Change Section */
+        .status-section {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .status-section h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .status-section .status-form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .status-section .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .status-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        .status-section select, .status-section textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .comments-section h3 {
+            color: #2e7d32;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .comment-count {
+            background: #2e7d32;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        .comments-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        .comment {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #2e7d32;
+        }
+        .comment.applicant-comment {
+            border-left-color: #2196f3;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .comment-author {
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .comment.applicant-comment .comment-author {
+            color: #2196f3;
+        }
+        .comment-date {
+            font-size: 12px;
+            color: #666;
+        }
+        .comment-text {
+            color: #333;
+            white-space: pre-wrap;
+        }
+        .comment-form {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .comment-form textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .comment-form button {
+            align-self: flex-end;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        .empty-state h3 {
+            color: #999;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success {
+            background-color: #2e7d32;
+        }
+        .toast.error {
+            background-color: #d32f2f;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .nav-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .detail-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .applications-table {
+                font-size: 12px;
+            }
+            .applications-table th, .applications-table td {
+                padding: 8px;
+            }
+            .filters {
+                flex-direction: column;
+            }
+        }
+
+        /* Hide/Show Views */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #2e7d32;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Status History */
+        .status-history {
+            margin-top: 15px;
+        }
+        .history-item {
+            display: flex;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        .history-date {
+            font-size: 12px;
+            color: #666;
+            min-width: 150px;
+        }
+        .history-text {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mountain House Muslim Association</h1>
+            <p>Mountain House, CA 95391</p>
+            <p><a href="mailto:zakat@mhma.info">zakat@mhma.info</a></p>
+            <h2>Zakat Applications Management</h2>
+        </div>
+
+        <!-- Login Section -->
+        <div id="loginSection" class="login-section">
+            <h2>Login</h2>
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="loginRole">Login As</label>
+                    <select id="loginRole">
+                        <option value="">Select Role</option>
+                        <option value="admin">Zakat Committee Admin</option>
+                        <option value="applicant">Applicant</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="handleLogin()">Login</button>
+            </div>
+            <p style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
+                <strong>Demo Accounts:</strong><br>
+                Admin: admin@mhma.info<br>
+                Applicant: john.doe@email.com or fatima.ahmed@email.com
+            </p>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboardSection" class="hidden">
+            <!-- Navigation Bar -->
+            <div class="nav-bar">
+                <div class="user-info">
+                    <span id="userName">Welcome</span>
+                    <span id="userRole" class="user-role">Admin</span>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+
+            <!-- Applications List View -->
+            <div id="listView">
+                <!-- Filters (Admin Only) -->
+                <div id="filtersSection" class="filters">
+                    <div class="filter-group">
+                        <label for="filterStatus">Status</label>
+                        <select id="filterStatus" onchange="filterApplications()">
+                            <option value="">All Statuses</option>
+                            <option value="submitted">Submitted</option>
+                            <option value="under_review">Under Review</option>
+                            <option value="pending_info">Pending Information</option>
+                            <option value="approved">Approved</option>
+                            <option value="denied">Denied</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterSearch">Search</label>
+                        <input type="text" id="filterSearch" placeholder="Name or Email" onkeyup="filterApplications()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDateFrom">From Date</label>
+                        <input type="date" id="filterDateFrom" onchange="filterApplications()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDateTo">To Date</label>
+                        <input type="date" id="filterDateTo" onchange="filterApplications()">
+                    </div>
+                </div>
+
+                <h3 id="listTitle">All Applications</h3>
+
+                <table class="applications-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Applicant Name</th>
+                            <th>Email</th>
+                            <th>Submission Date</th>
+                            <th>Status</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicationsTableBody">
+                        <!-- Applications will be populated here -->
+                    </tbody>
+                </table>
+
+                <div id="emptyState" class="empty-state hidden">
+                    <h3>No Applications Found</h3>
+                    <p>No applications match your search criteria.</p>
+                </div>
+            </div>
+
+            <!-- Application Detail View -->
+            <div id="detailView" class="application-detail">
+                <div class="back-btn" onclick="showListView()">
+                    &larr; Back to Applications
+                </div>
+
+                <div class="detail-header">
+                    <div>
+                        <h2 id="detailTitle">Application Details</h2>
+                        <p id="detailSubtitle" style="color: #666; margin: 0;"></p>
+                    </div>
+                    <div class="detail-actions">
+                        <span id="detailStatus"></span>
+                    </div>
+                </div>
+
+                <!-- Status Change Section (Admin Only) -->
+                <div id="statusChangeSection" class="status-section">
+                    <h3>Update Application Status</h3>
+                    <div class="status-form">
+                        <div class="form-group">
+                            <label for="newStatus">New Status</label>
+                            <select id="newStatus">
+                                <option value="submitted">Submitted</option>
+                                <option value="under_review">Under Review</option>
+                                <option value="pending_info">Pending Information</option>
+                                <option value="approved">Approved</option>
+                                <option value="denied">Denied</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 2;">
+                            <label for="statusNote">Note (optional)</label>
+                            <input type="text" id="statusNote" placeholder="Add a note for this status change">
+                        </div>
+                        <button class="btn btn-primary" onclick="updateStatus()">Update Status</button>
+                    </div>
+
+                    <div class="status-history" id="statusHistory">
+                        <h4 style="margin-bottom: 10px;">Status History</h4>
+                        <!-- History items will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Applicant Information -->
+                <div class="info-card">
+                    <h3>Applicant Information</h3>
+                    <div class="info-grid" id="applicantInfo">
+                        <!-- Info will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Financial Information -->
+                <div class="info-card">
+                    <h3>Financial Information</h3>
+                    <div class="info-grid" id="financialInfo">
+                        <!-- Info will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Assistance Request -->
+                <div class="info-card">
+                    <h3>Assistance Request</h3>
+                    <div id="assistanceInfo">
+                        <!-- Info will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <h3>
+                        Discussion
+                        <span class="comment-count" id="commentCount">0</span>
+                    </h3>
+                    <div class="comments-list" id="commentsList">
+                        <!-- Comments will be populated here -->
+                    </div>
+                    <div class="comment-form">
+                        <textarea id="newComment" placeholder="Add a comment..."></textarea>
+                        <button class="btn btn-primary" onclick="addComment()">Post Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current user state
+        let currentUser = null;
+        let currentApplicationId = null;
+
+        // Sample data - In production, this would come from a database
+        let applications = [
+            {
+                id: 'ZAK-2025-001',
+                applicant: {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'john.doe@email.com',
+                    phone: '(555) 123-4567',
+                    address: '123 Main Street',
+                    city: 'Mountain House',
+                    state: 'CA',
+                    zip: '95391',
+                    age: 45,
+                    gender: 'Male',
+                    maritalStatus: 'Married',
+                    householdSize: 4
+                },
+                financial: {
+                    monthlyIncome: 2500,
+                    monthlyExpenses: 3200,
+                    totalAssets: 1500,
+                    totalDebts: 15000,
+                    receivesGovernmentAid: 'Yes - SNAP'
+                },
+                assistance: {
+                    type: 'Monthly',
+                    duration: '3 months',
+                    amountRequested: 800,
+                    reason: 'Lost job due to company layoffs. Currently seeking new employment but need help with rent and utilities while searching for work.'
+                },
+                status: 'under_review',
+                submissionDate: '2025-01-03',
+                statusHistory: [
+                    { date: '2025-01-03', status: 'submitted', note: 'Application submitted', by: 'Applicant' },
+                    { date: '2025-01-04', status: 'under_review', note: 'Assigned for review', by: 'Admin' }
+                ],
+                comments: [
+                    { id: 1, author: 'Admin', authorRole: 'admin', text: 'Thank you for your application. We are reviewing your documents. Could you please provide your most recent pay stubs?', date: '2025-01-04 10:30 AM' },
+                    { id: 2, author: 'John Doe', authorRole: 'applicant', text: 'I have uploaded the pay stubs from my last employer. Please let me know if you need anything else.', date: '2025-01-04 02:15 PM' }
+                ]
+            },
+            {
+                id: 'ZAK-2025-002',
+                applicant: {
+                    firstName: 'Fatima',
+                    lastName: 'Ahmed',
+                    email: 'fatima.ahmed@email.com',
+                    phone: '(555) 987-6543',
+                    address: '456 Oak Avenue',
+                    city: 'Tracy',
+                    state: 'CA',
+                    zip: '95376',
+                    age: 32,
+                    gender: 'Female',
+                    maritalStatus: 'Single',
+                    householdSize: 2
+                },
+                financial: {
+                    monthlyIncome: 1800,
+                    monthlyExpenses: 2100,
+                    totalAssets: 500,
+                    totalDebts: 8000,
+                    receivesGovernmentAid: 'No'
+                },
+                assistance: {
+                    type: 'One-time',
+                    duration: 'N/A',
+                    amountRequested: 1500,
+                    reason: 'Medical emergency requiring surgery. Insurance does not cover full cost and need assistance with medical bills.'
+                },
+                status: 'pending_info',
+                submissionDate: '2025-01-05',
+                statusHistory: [
+                    { date: '2025-01-05', status: 'submitted', note: 'Application submitted', by: 'Applicant' },
+                    { date: '2025-01-06', status: 'pending_info', note: 'Requesting additional medical documentation', by: 'Admin' }
+                ],
+                comments: [
+                    { id: 1, author: 'Admin', authorRole: 'admin', text: 'We need copies of your medical bills and insurance explanation of benefits (EOB) to process your request.', date: '2025-01-06 09:00 AM' }
+                ]
+            },
+            {
+                id: 'ZAK-2025-003',
+                applicant: {
+                    firstName: 'Muhammad',
+                    lastName: 'Ali',
+                    email: 'muhammad.ali@email.com',
+                    phone: '(555) 456-7890',
+                    address: '789 Elm Street',
+                    city: 'Mountain House',
+                    state: 'CA',
+                    zip: '95391',
+                    age: 55,
+                    gender: 'Male',
+                    maritalStatus: 'Married',
+                    householdSize: 6
+                },
+                financial: {
+                    monthlyIncome: 3200,
+                    monthlyExpenses: 3800,
+                    totalAssets: 2000,
+                    totalDebts: 25000,
+                    receivesGovernmentAid: 'No'
+                },
+                assistance: {
+                    type: 'Monthly',
+                    duration: '6 months',
+                    amountRequested: 600,
+                    reason: 'Wife diagnosed with chronic illness requiring ongoing medical care. Additional expenses for medications and treatments.'
+                },
+                status: 'approved',
+                submissionDate: '2024-12-20',
+                statusHistory: [
+                    { date: '2024-12-20', status: 'submitted', note: 'Application submitted', by: 'Applicant' },
+                    { date: '2024-12-21', status: 'under_review', note: 'Documents verified', by: 'Admin' },
+                    { date: '2024-12-28', status: 'approved', note: 'Approved for $600/month for 6 months', by: 'Admin' }
+                ],
+                comments: [
+                    { id: 1, author: 'Admin', authorRole: 'admin', text: 'Application approved. First disbursement will be processed by January 5th.', date: '2024-12-28 03:00 PM' },
+                    { id: 2, author: 'Muhammad Ali', authorRole: 'applicant', text: 'JazakAllah Khair. May Allah bless the MHMA community.', date: '2024-12-28 05:30 PM' }
+                ]
+            },
+            {
+                id: 'ZAK-2025-004',
+                applicant: {
+                    firstName: 'Sarah',
+                    lastName: 'Khan',
+                    email: 'sarah.khan@email.com',
+                    phone: '(555) 321-0987',
+                    address: '321 Pine Road',
+                    city: 'Manteca',
+                    state: 'CA',
+                    zip: '95336',
+                    age: 28,
+                    gender: 'Female',
+                    maritalStatus: 'Divorced',
+                    householdSize: 3
+                },
+                financial: {
+                    monthlyIncome: 2200,
+                    monthlyExpenses: 2800,
+                    totalAssets: 800,
+                    totalDebts: 12000,
+                    receivesGovernmentAid: 'Yes - WIC'
+                },
+                assistance: {
+                    type: 'One-time',
+                    duration: 'N/A',
+                    amountRequested: 2000,
+                    reason: 'Need help with security deposit and first month rent for new apartment after divorce. Currently staying with family temporarily.'
+                },
+                status: 'submitted',
+                submissionDate: '2025-01-07',
+                statusHistory: [
+                    { date: '2025-01-07', status: 'submitted', note: 'Application submitted', by: 'Applicant' }
+                ],
+                comments: []
+            }
+        ];
+
+        // User database - In production, this would be in a secure database
+        const users = {
+            'admin@mhma.info': { name: 'Zakat Admin', role: 'admin' },
+            'john.doe@email.com': { name: 'John Doe', role: 'applicant' },
+            'fatima.ahmed@email.com': { name: 'Fatima Ahmed', role: 'applicant' },
+            'muhammad.ali@email.com': { name: 'Muhammad Ali', role: 'applicant' },
+            'sarah.khan@email.com': { name: 'Sarah Khan', role: 'applicant' }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for stored session
+            const storedUser = localStorage.getItem('zakatUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                showDashboard();
+            }
+        });
+
+        // Login handler
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const role = document.getElementById('loginRole').value;
+
+            if (!email || !role) {
+                showToast('Please enter email and select a role', 'error');
+                return;
+            }
+
+            // Check if user exists
+            if (users[email]) {
+                // Verify role matches
+                if (users[email].role !== role) {
+                    showToast('Invalid role for this email', 'error');
+                    return;
+                }
+                currentUser = {
+                    email: email,
+                    name: users[email].name,
+                    role: users[email].role
+                };
+            } else if (role === 'applicant') {
+                // Allow new applicants
+                currentUser = {
+                    email: email,
+                    name: email.split('@')[0],
+                    role: 'applicant'
+                };
+            } else {
+                showToast('Admin account not found', 'error');
+                return;
+            }
+
+            localStorage.setItem('zakatUser', JSON.stringify(currentUser));
+            showDashboard();
+            showToast('Welcome, ' + currentUser.name + '!', 'success');
+        }
+
+        // Logout handler
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('zakatUser');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginRole').value = '';
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+
+            document.getElementById('userName').textContent = 'Welcome, ' + currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Zakat Admin' : 'Applicant';
+
+            // Show/hide admin-only elements
+            if (currentUser.role === 'admin') {
+                document.getElementById('filtersSection').classList.remove('hidden');
+                document.getElementById('listTitle').textContent = 'All Applications';
+            } else {
+                document.getElementById('filtersSection').classList.add('hidden');
+                document.getElementById('listTitle').textContent = 'My Applications';
+            }
+
+            showListView();
+            loadApplications();
+        }
+
+        // Show list view
+        function showListView() {
+            document.getElementById('listView').style.display = 'block';
+            document.getElementById('detailView').style.display = 'none';
+            currentApplicationId = null;
+        }
+
+        // Load applications based on user role
+        function loadApplications() {
+            let filteredApps = applications;
+
+            // If applicant, only show their own applications
+            if (currentUser.role === 'applicant') {
+                filteredApps = applications.filter(app =>
+                    app.applicant.email.toLowerCase() === currentUser.email.toLowerCase()
+                );
+            }
+
+            renderApplicationsTable(filteredApps);
+        }
+
+        // Filter applications (Admin only)
+        function filterApplications() {
+            if (currentUser.role !== 'admin') return;
+
+            let filteredApps = [...applications];
+
+            const statusFilter = document.getElementById('filterStatus').value;
+            const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
+            const dateFromFilter = document.getElementById('filterDateFrom').value;
+            const dateToFilter = document.getElementById('filterDateTo').value;
+
+            if (statusFilter) {
+                filteredApps = filteredApps.filter(app => app.status === statusFilter);
+            }
+
+            if (searchFilter) {
+                filteredApps = filteredApps.filter(app =>
+                    app.applicant.firstName.toLowerCase().includes(searchFilter) ||
+                    app.applicant.lastName.toLowerCase().includes(searchFilter) ||
+                    app.applicant.email.toLowerCase().includes(searchFilter)
+                );
+            }
+
+            if (dateFromFilter) {
+                filteredApps = filteredApps.filter(app => app.submissionDate >= dateFromFilter);
+            }
+
+            if (dateToFilter) {
+                filteredApps = filteredApps.filter(app => app.submissionDate <= dateToFilter);
+            }
+
+            renderApplicationsTable(filteredApps);
+        }
+
+        // Render applications table
+        function renderApplicationsTable(apps) {
+            const tbody = document.getElementById('applicationsTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (apps.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            tbody.innerHTML = apps.map(app => `
+                <tr onclick="viewApplication('${app.id}')">
+                    <td><strong>${app.id}</strong></td>
+                    <td>${app.applicant.firstName} ${app.applicant.lastName}</td>
+                    <td>${app.applicant.email}</td>
+                    <td>${formatDate(app.submissionDate)}</td>
+                    <td><span class="status-badge status-${app.status}">${formatStatus(app.status)}</span></td>
+                    <td>${app.comments.length}</td>
+                </tr>
+            `).join('');
+        }
+
+        // View application details
+        function viewApplication(appId) {
+            const app = applications.find(a => a.id === appId);
+            if (!app) return;
+
+            currentApplicationId = appId;
+
+            document.getElementById('listView').style.display = 'none';
+            document.getElementById('detailView').style.display = 'block';
+
+            // Set header info
+            document.getElementById('detailTitle').textContent = 'Application ' + app.id;
+            document.getElementById('detailSubtitle').textContent =
+                `Submitted on ${formatDate(app.submissionDate)} by ${app.applicant.firstName} ${app.applicant.lastName}`;
+            document.getElementById('detailStatus').innerHTML =
+                `<span class="status-badge status-${app.status}">${formatStatus(app.status)}</span>`;
+
+            // Show/hide admin-only sections
+            if (currentUser.role === 'admin') {
+                document.getElementById('statusChangeSection').classList.remove('hidden');
+                document.getElementById('newStatus').value = app.status;
+            } else {
+                document.getElementById('statusChangeSection').classList.add('hidden');
+            }
+
+            // Populate applicant info
+            document.getElementById('applicantInfo').innerHTML = `
+                <div class="info-item"><span class="label">Full Name</span><span class="value">${app.applicant.firstName} ${app.applicant.lastName}</span></div>
+                <div class="info-item"><span class="label">Email</span><span class="value">${app.applicant.email}</span></div>
+                <div class="info-item"><span class="label">Phone</span><span class="value">${app.applicant.phone}</span></div>
+                <div class="info-item"><span class="label">Address</span><span class="value">${app.applicant.address}, ${app.applicant.city}, ${app.applicant.state} ${app.applicant.zip}</span></div>
+                <div class="info-item"><span class="label">Age</span><span class="value">${app.applicant.age}</span></div>
+                <div class="info-item"><span class="label">Gender</span><span class="value">${app.applicant.gender}</span></div>
+                <div class="info-item"><span class="label">Marital Status</span><span class="value">${app.applicant.maritalStatus}</span></div>
+                <div class="info-item"><span class="label">Household Size</span><span class="value">${app.applicant.householdSize} members</span></div>
+            `;
+
+            // Populate financial info
+            document.getElementById('financialInfo').innerHTML = `
+                <div class="info-item"><span class="label">Monthly Income</span><span class="value">$${app.financial.monthlyIncome.toLocaleString()}</span></div>
+                <div class="info-item"><span class="label">Monthly Expenses</span><span class="value">$${app.financial.monthlyExpenses.toLocaleString()}</span></div>
+                <div class="info-item"><span class="label">Total Assets</span><span class="value">$${app.financial.totalAssets.toLocaleString()}</span></div>
+                <div class="info-item"><span class="label">Total Debts</span><span class="value">$${app.financial.totalDebts.toLocaleString()}</span></div>
+                <div class="info-item"><span class="label">Government Aid</span><span class="value">${app.financial.receivesGovernmentAid}</span></div>
+                <div class="info-item"><span class="label">Monthly Shortfall</span><span class="value" style="color: ${app.financial.monthlyExpenses > app.financial.monthlyIncome ? '#d32f2f' : '#2e7d32'}">$${(app.financial.monthlyExpenses - app.financial.monthlyIncome).toLocaleString()}</span></div>
+            `;
+
+            // Populate assistance info
+            document.getElementById('assistanceInfo').innerHTML = `
+                <div class="info-grid">
+                    <div class="info-item"><span class="label">Assistance Type</span><span class="value">${app.assistance.type}</span></div>
+                    <div class="info-item"><span class="label">Duration</span><span class="value">${app.assistance.duration}</span></div>
+                    <div class="info-item"><span class="label">Amount Requested</span><span class="value">$${app.assistance.amountRequested.toLocaleString()}</span></div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <span class="label">Reason for Application</span>
+                    <p style="margin-top: 5px; padding: 15px; background: #f5f5f5; border-radius: 5px;">${app.assistance.reason}</p>
+                </div>
+            `;
+
+            // Populate status history
+            document.getElementById('statusHistory').innerHTML = `
+                <h4 style="margin-bottom: 10px;">Status History</h4>
+                ${app.statusHistory.map(h => `
+                    <div class="history-item">
+                        <span class="history-date">${formatDate(h.date)}</span>
+                        <span class="history-text"><span class="status-badge status-${h.status}">${formatStatus(h.status)}</span> - ${h.note} (by ${h.by})</span>
+                    </div>
+                `).join('')}
+            `;
+
+            // Populate comments
+            loadComments(app);
+        }
+
+        // Load comments
+        function loadComments(app) {
+            document.getElementById('commentCount').textContent = app.comments.length;
+
+            if (app.comments.length === 0) {
+                document.getElementById('commentsList').innerHTML = '<p style="color: #666; text-align: center;">No comments yet. Start the discussion.</p>';
+                return;
+            }
+
+            document.getElementById('commentsList').innerHTML = app.comments.map(c => `
+                <div class="comment ${c.authorRole === 'applicant' ? 'applicant-comment' : ''}">
+                    <div class="comment-header">
+                        <span class="comment-author">${c.author} ${c.authorRole === 'admin' ? '(Zakat Committee)' : '(Applicant)'}</span>
+                        <span class="comment-date">${c.date}</span>
+                    </div>
+                    <div class="comment-text">${c.text}</div>
+                </div>
+            `).join('');
+
+            // Scroll to bottom of comments
+            const commentsList = document.getElementById('commentsList');
+            commentsList.scrollTop = commentsList.scrollHeight;
+        }
+
+        // Add comment
+        function addComment() {
+            const commentText = document.getElementById('newComment').value.trim();
+            if (!commentText) {
+                showToast('Please enter a comment', 'error');
+                return;
+            }
+
+            const app = applications.find(a => a.id === currentApplicationId);
+            if (!app) return;
+
+            const newComment = {
+                id: app.comments.length + 1,
+                author: currentUser.name,
+                authorRole: currentUser.role,
+                text: commentText,
+                date: new Date().toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            };
+
+            app.comments.push(newComment);
+            document.getElementById('newComment').value = '';
+            loadComments(app);
+            showToast('Comment posted successfully', 'success');
+        }
+
+        // Update status (Admin only)
+        function updateStatus() {
+            if (currentUser.role !== 'admin') return;
+
+            const app = applications.find(a => a.id === currentApplicationId);
+            if (!app) return;
+
+            const newStatus = document.getElementById('newStatus').value;
+            const note = document.getElementById('statusNote').value.trim() || 'Status updated';
+
+            if (newStatus === app.status) {
+                showToast('Please select a different status', 'error');
+                return;
+            }
+
+            app.status = newStatus;
+            app.statusHistory.push({
+                date: new Date().toISOString().split('T')[0],
+                status: newStatus,
+                note: note,
+                by: currentUser.name
+            });
+
+            document.getElementById('statusNote').value = '';
+            viewApplication(currentApplicationId);
+            showToast('Status updated successfully', 'success');
+        }
+
+        // Utility functions
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function formatStatus(status) {
+            const statusMap = {
+                'submitted': 'Submitted',
+                'under_review': 'Under Review',
+                'pending_info': 'Pending Info',
+                'approved': 'Approved',
+                'denied': 'Denied'
+            };
+            return statusMap[status] || status;
+        }
+
+        function showToast(message, type) {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
