@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MHMA Zakat and Sadqah Application Form - WordPress Version</title>
+    <title>MHMA Zakat Application Form - WordPress Version</title>
     <style>
         * {
             box-sizing: border-box;
@@ -268,11 +268,11 @@
             <h1>Mountain House Muslim Association</h1>
             <p>Mountain House, CA 95391</p>
             <p><a href="mailto:zakat@mhma.info">zakat@mhma.info</a></p>
-            <h2>Zakat and Sadqah Application Form</h2>
+            <h2>Zakat Application Form</h2>
         </div>
 
         <div class="notice">
-            <strong>NOTICE OF CONFIDENTIALITY:</strong> This Zakah/Sadaqah Form includes personal and confidential information intended only for restricted, internal use by authorized personnel exclusively for evaluation of Zakah/Sadaqah requests. Unauthorized use, copying, distribution or dissemination of the information provided in this application is strictly prohibited.
+            <strong>NOTICE OF CONFIDENTIALITY:</strong> This Zakat Form includes personal and confidential information intended only for restricted, internal use by authorized personnel exclusively for evaluation of Zakat requests. Unauthorized use, copying, distribution or dissemination of the information provided in this application is strictly prohibited.
         </div>
 
         <div class="instructions">
@@ -316,8 +316,11 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="ssn">SSN (Last 4 digits) <span class="required">*</span></label>
-                        <input type="text" id="ssn" name="ssn" pattern="\d{4}" maxlength="4" placeholder="XXXX" required>
+                        <label>Do you have an SSN? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="has_ssn" value="yes" required> Yes</label>
+                            <label><input type="radio" name="has_ssn" value="no"> No</label>
+                        </div>
                     </div>
                     <div class="form-group" style="max-width: 100px;">
                         <label for="age">Age <span class="required">*</span></label>
@@ -331,8 +334,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="driverLicense">Driver License/ID #</label>
-                        <input type="text" id="driverLicense" name="driver_license">
+                        <label>Do you have a Driver License/ID? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="has_driver_license" value="yes" required> Yes</label>
+                            <label><input type="radio" name="has_driver_license" value="no"> No</label>
+                        </div>
                     </div>
                 </div>
 
@@ -450,25 +456,38 @@
                 <button type="button" class="add-row-btn" onclick="addHouseholdRow()">+ Add Another Person</button>
 
                 <div class="form-row" style="margin-top: 20px;">
-                    <div class="form-group">
-                        <label>Have you applied for Zakat/Sadqah before to MHMA?</label>
+                    <div class="form-group full-width">
+                        <label>Have you applied for Zakat before to MHMA?</label>
                         <div class="radio-group">
                             <label><input type="radio" name="applied_mhma_before" value="yes" onchange="toggleMHMADate()"> Yes</label>
                             <label><input type="radio" name="applied_mhma_before" value="no" onchange="toggleMHMADate()"> No</label>
                         </div>
                     </div>
-                    <div class="form-group" id="mhmaDateGroup" style="display: none;">
-                        <label>When?</label>
-                        <div class="form-row">
-                            <input type="text" name="mhma_month" placeholder="Month" style="width: 100px;">
-                            <input type="text" name="mhma_year" placeholder="Year" style="width: 80px;">
+                </div>
+                <div id="mhmaDateGroup" style="display: none;" class="conditional-field">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>When was that?</label>
+                            <div class="form-row">
+                                <input type="text" name="mhma_month" placeholder="Month" style="width: 100px;">
+                                <input type="text" name="mhma_year" placeholder="Year" style="width: 80px;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>What was the outcome?</label>
+                            <select name="mhma_outcome">
+                                <option value="">--</option>
+                                <option value="approved">Approved</option>
+                                <option value="denied">Denied</option>
+                                <option value="pending">Pending</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Have you applied for Zakat/Sadqah before to any other organization?</label>
+                        <label>Have you applied for Zakat before to any other organization?</label>
                         <div class="radio-group">
                             <label><input type="radio" name="applied_other_before" value="yes" onchange="toggleOtherOrg()"> Yes</label>
                             <label><input type="radio" name="applied_other_before" value="no" onchange="toggleOtherOrg()"> No</label>
@@ -501,13 +520,19 @@
                     <div class="form-group full-width">
                         <label>Place of current residence <span class="required">*</span></label>
                         <div class="radio-group">
-                            <label><input type="radio" name="residence_type" value="own_house" required> Own House</label>
-                            <label><input type="radio" name="residence_type" value="shelter"> Shelter</label>
-                            <label><input type="radio" name="residence_type" value="rental_apartment"> Rental Apartment</label>
-                            <label><input type="radio" name="residence_type" value="room_rental"> Room Rental (in house)</label>
-                            <label><input type="radio" name="residence_type" value="subsidized"> Subsidized (low income) Housing</label>
-                            <label><input type="radio" name="residence_type" value="other"> Other</label>
+                            <label><input type="radio" name="residence_type" value="own_house" required onchange="toggleResidenceOther()"> Own House</label>
+                            <label><input type="radio" name="residence_type" value="shelter" onchange="toggleResidenceOther()"> Shelter</label>
+                            <label><input type="radio" name="residence_type" value="rental_apartment" onchange="toggleResidenceOther()"> Rental Apartment</label>
+                            <label><input type="radio" name="residence_type" value="room_rental" onchange="toggleResidenceOther()"> Room Rental (in house)</label>
+                            <label><input type="radio" name="residence_type" value="subsidized" onchange="toggleResidenceOther()"> Subsidized (low income) Housing</label>
+                            <label><input type="radio" name="residence_type" value="other" onchange="toggleResidenceOther()"> Other</label>
                         </div>
+                    </div>
+                </div>
+                <div id="residenceOtherGroup" style="display: none;" class="conditional-field">
+                    <div class="form-group">
+                        <label>Please specify:</label>
+                        <input type="text" name="residence_other_details" placeholder="Please describe your residence type">
                     </div>
                 </div>
 
@@ -540,6 +565,10 @@
                         <label>Make, Model and Year</label>
                         <input type="text" name="auto_details">
                     </div>
+                    <div class="form-group" id="transportOtherDetails" style="display: none;">
+                        <label>Please specify:</label>
+                        <input type="text" name="transport_other_details" placeholder="Please describe your transportation method">
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -568,11 +597,15 @@
                     <div class="form-group">
                         <label>Health Insurance <span class="required">*</span></label>
                         <div class="radio-group">
-                            <label><input type="radio" name="health_insurance" value="insured" required> Insured</label>
-                            <label><input type="radio" name="health_insurance" value="uninsured"> Uninsured</label>
-                            <label><input type="radio" name="health_insurance" value="medi_cal"> Medi-Cal/Medicare</label>
-                            <label><input type="radio" name="health_insurance" value="other"> Other</label>
+                            <label><input type="radio" name="health_insurance" value="insured" required onchange="toggleHealthOther()"> Insured</label>
+                            <label><input type="radio" name="health_insurance" value="uninsured" onchange="toggleHealthOther()"> Uninsured</label>
+                            <label><input type="radio" name="health_insurance" value="medi_cal" onchange="toggleHealthOther()"> Medi-Cal/Medicare</label>
+                            <label><input type="radio" name="health_insurance" value="other" onchange="toggleHealthOther()"> Other</label>
                         </div>
+                    </div>
+                    <div class="form-group" id="healthOtherDetails" style="display: none;">
+                        <label>Please specify:</label>
+                        <input type="text" name="health_insurance_other_details" placeholder="Please describe your health insurance">
                     </div>
                 </div>
 
@@ -580,11 +613,15 @@
                     <div class="form-group">
                         <label>Education</label>
                         <div class="radio-group">
-                            <label><input type="radio" name="education" value="college_grad"> College Grad</label>
-                            <label><input type="radio" name="education" value="high_school"> High School</label>
-                            <label><input type="radio" name="education" value="unknown"> Unknown</label>
-                            <label><input type="radio" name="education" value="other"> Other</label>
+                            <label><input type="radio" name="education" value="college_grad" onchange="toggleEducationOther()"> College Grad</label>
+                            <label><input type="radio" name="education" value="high_school" onchange="toggleEducationOther()"> High School</label>
+                            <label><input type="radio" name="education" value="unknown" onchange="toggleEducationOther()"> Unknown</label>
+                            <label><input type="radio" name="education" value="other" onchange="toggleEducationOther()"> Other</label>
                         </div>
+                    </div>
+                    <div class="form-group" id="educationOtherDetails" style="display: none;">
+                        <label>Please specify:</label>
+                        <input type="text" name="education_other_details" placeholder="Please describe your education level">
                     </div>
                 </div>
             </div>
@@ -593,7 +630,7 @@
             <div class="section">
                 <h2>Assets Owned by the Household</h2>
 
-                <table>
+                <table id="assetsTable">
                     <thead>
                         <tr>
                             <th>Type of Asset</th>
@@ -604,41 +641,37 @@
                     <tbody>
                         <tr>
                             <td>House</td>
-                            <td><input type="number" name="asset_house_value" min="0" step="0.01" placeholder="0.00"></td>
+                            <td><input type="number" name="asset_house_value" min="0" step="0.01" placeholder="0.00" class="asset-input"></td>
                             <td><input type="date" name="asset_house_date"></td>
                         </tr>
                         <tr>
                             <td>Business</td>
-                            <td><input type="number" name="asset_business_value" min="0" step="0.01" placeholder="0.00"></td>
+                            <td><input type="number" name="asset_business_value" min="0" step="0.01" placeholder="0.00" class="asset-input"></td>
                             <td><input type="date" name="asset_business_date"></td>
                         </tr>
                         <tr>
                             <td>Car(s)</td>
-                            <td><input type="number" name="asset_cars_value" min="0" step="0.01" placeholder="0.00"></td>
+                            <td><input type="number" name="asset_cars_value" min="0" step="0.01" placeholder="0.00" class="asset-input"></td>
                             <td><input type="date" name="asset_cars_date"></td>
                         </tr>
                         <tr>
                             <td>Cash</td>
-                            <td><input type="number" name="asset_cash_value" min="0" step="0.01" placeholder="0.00"></td>
+                            <td><input type="number" name="asset_cash_value" min="0" step="0.01" placeholder="0.00" class="asset-input"></td>
                             <td><input type="date" name="asset_cash_date"></td>
                         </tr>
                         <tr>
                             <td><input type="text" name="asset_other1_type" placeholder="Other (Specify)"></td>
-                            <td><input type="number" name="asset_other1_value" min="0" step="0.01" placeholder="0.00"></td>
+                            <td><input type="number" name="asset_other1_value" min="0" step="0.01" placeholder="0.00" class="asset-input"></td>
                             <td><input type="date" name="asset_other1_date"></td>
                         </tr>
-                        <tr>
-                            <td><input type="text" name="asset_other2_type" placeholder="Other (Specify)"></td>
-                            <td><input type="number" name="asset_other2_value" min="0" step="0.01" placeholder="0.00"></td>
-                            <td><input type="date" name="asset_other2_date"></td>
-                        </tr>
-                        <tr style="background: #e8f5e9; font-weight: bold;">
+                        <tr style="background: #e8f5e9; font-weight: bold;" id="assetsTotalRow">
                             <td>Total</td>
                             <td><input type="text" id="totalAssets" readonly style="font-weight: bold;"></td>
                             <td></td>
                         </tr>
                     </tbody>
                 </table>
+                <button type="button" class="add-row-btn" onclick="addAssetRow()">+ Add Another Asset</button>
 
                 <div class="form-row">
                     <div class="form-group">
@@ -696,7 +729,7 @@
             <div class="section">
                 <h2>Estimate of Monthly Expenses</h2>
 
-                <table>
+                <table id="expensesTable">
                     <thead>
                         <tr>
                             <th>Expense</th>
@@ -785,33 +818,14 @@
                                 </select>
                             </td>
                         </tr>
-                        <tr>
-                            <td><input type="text" name="expense_other1_desc" placeholder="Other (Specify)"></td>
-                            <td><input type="number" name="expense_other1" min="0" step="0.01" class="expense-input"></td>
-                            <td>
-                                <select name="expense_other1_freq">
-                                    <option value="monthly">Monthly</option>
-                                    <option value="weekly">Weekly</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="text" name="expense_other2_desc" placeholder="Other (Specify)"></td>
-                            <td><input type="number" name="expense_other2" min="0" step="0.01" class="expense-input"></td>
-                            <td>
-                                <select name="expense_other2_freq">
-                                    <option value="monthly">Monthly</option>
-                                    <option value="weekly">Weekly</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr style="background: #e8f5e9; font-weight: bold;">
+                        <tr style="background: #e8f5e9; font-weight: bold;" id="expensesTotalRow">
                             <td>Total Monthly</td>
                             <td><input type="text" id="totalExpenses" readonly style="font-weight: bold;"></td>
                             <td></td>
                         </tr>
                     </tbody>
                 </table>
+                <button type="button" class="add-row-btn" onclick="addExpenseRow()">+ Add Another Expense</button>
             </div>
 
             <!-- Section 6: Zakat Eligibility -->
@@ -840,7 +854,7 @@
 
                 <div class="form-row">
                     <div class="form-group full-width">
-                        <label for="reason">Why are you applying for Zakat/Sadqah? <span class="required">*</span></label>
+                        <label for="reason">Why are you applying for Zakat? <span class="required">*</span></label>
                         <textarea id="reason" name="reason" placeholder="Please explain your situation and why you need assistance..." required></textarea>
                     </div>
                 </div>
@@ -887,7 +901,7 @@
                 <h2>References</h2>
 
                 <div class="notice" style="background-color: #fff3cd;">
-                    <strong>Notice:</strong> References should neither be immediate relatives or people who live with you, nor Zakah/Sadaqah recipients. Muslim references especially from local masjid is preferred, at least one.
+                    <strong>Notice:</strong> References should neither be immediate relatives or people who live with you, nor Zakat recipients. Muslim references especially from local masjid is preferred, at least one.
                 </div>
 
                 <!-- Reference 1 -->
@@ -1040,7 +1054,7 @@
                 <h2>Statement and Signature</h2>
 
                 <div class="info-box" style="background: #fff8e1; border-color: #ff9800;">
-                    <p>I testify in front of Allah (سبحانه و تعالى) that the information provided on this form is true and accurate to the best of my knowledge. I agree that the information provided in this application will be utilized in connection with this request for Zakah/Sadaqah. I will immediately inform MHMA Zakat Committee if I apply for the Zakah/Sadqah or any other form of assistance to any other organization, or there is any change in the circumstances I have mentioned in the form.</p>
+                    <p>I testify in front of Allah (سبحانه و تعالى) that the information provided on this form is true and accurate to the best of my knowledge. I agree that the information provided in this application will be utilized in connection with this request for Zakat. I will immediately inform MHMA Zakat Committee if I apply for Zakat or any other form of assistance to any other organization, or there is any change in the circumstances I have mentioned in the form.</p>
                 </div>
 
                 <div class="form-row">
@@ -1091,7 +1105,7 @@
         function toggleMHMADate() {
             const applied = document.querySelector('input[name="applied_mhma_before"]:checked');
             const dateGroup = document.getElementById('mhmaDateGroup');
-            dateGroup.style.display = applied && applied.value === 'yes' ? 'flex' : 'none';
+            dateGroup.style.display = applied && applied.value === 'yes' ? 'block' : 'none';
         }
 
         function toggleOtherOrg() {
@@ -1109,7 +1123,9 @@
         function toggleAutoDetails() {
             const transport = document.querySelector('input[name="transportation"]:checked');
             const autoDetails = document.getElementById('autoDetails');
+            const transportOther = document.getElementById('transportOtherDetails');
             autoDetails.style.display = transport && transport.value === 'own_auto' ? 'block' : 'none';
+            transportOther.style.display = transport && transport.value === 'other' ? 'block' : 'none';
         }
 
         function toggleEmployer() {
@@ -1129,6 +1145,24 @@
             const assistanceType = document.querySelector('input[name="assistance_type"]:checked');
             document.getElementById('monthlyAssistance').style.display = assistanceType && assistanceType.value === 'monthly' ? 'block' : 'none';
             document.getElementById('oneTimeAssistance').style.display = assistanceType && assistanceType.value === 'one_time' ? 'block' : 'none';
+        }
+
+        function toggleResidenceOther() {
+            const residence = document.querySelector('input[name="residence_type"]:checked');
+            const residenceOther = document.getElementById('residenceOtherGroup');
+            residenceOther.style.display = residence && residence.value === 'other' ? 'block' : 'none';
+        }
+
+        function toggleHealthOther() {
+            const health = document.querySelector('input[name="health_insurance"]:checked');
+            const healthOther = document.getElementById('healthOtherDetails');
+            healthOther.style.display = health && health.value === 'other' ? 'block' : 'none';
+        }
+
+        function toggleEducationOther() {
+            const education = document.querySelector('input[name="education"]:checked');
+            const educationOther = document.getElementById('educationOtherDetails');
+            educationOther.style.display = education && education.value === 'other' ? 'block' : 'none';
         }
 
         // Add row functions for repeater tables
@@ -1174,6 +1208,37 @@
             `;
             tbody.appendChild(newRow);
             debtRowCount++;
+        }
+
+        let assetRowCount = 2;
+        function addAssetRow() {
+            const totalRow = document.getElementById('assetsTotalRow');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" name="asset_other${assetRowCount}_type" placeholder="Other (Specify)"></td>
+                <td><input type="number" name="asset_other${assetRowCount}_value" min="0" step="0.01" placeholder="0.00" class="asset-input"></td>
+                <td><input type="date" name="asset_other${assetRowCount}_date"></td>
+            `;
+            totalRow.parentNode.insertBefore(newRow, totalRow);
+            assetRowCount++;
+        }
+
+        let expenseRowCount = 1;
+        function addExpenseRow() {
+            const totalRow = document.getElementById('expensesTotalRow');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" name="expense_other${expenseRowCount}_desc" placeholder="Other (Specify)"></td>
+                <td><input type="number" name="expense_other${expenseRowCount}" min="0" step="0.01" class="expense-input"></td>
+                <td>
+                    <select name="expense_other${expenseRowCount}_freq">
+                        <option value="monthly">Monthly</option>
+                        <option value="weekly">Weekly</option>
+                    </select>
+                </td>
+            `;
+            totalRow.parentNode.insertBefore(newRow, totalRow);
+            expenseRowCount++;
         }
 
         // Form submission
